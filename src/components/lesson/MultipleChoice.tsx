@@ -1,38 +1,61 @@
-'use client';
-import { Exercise } from '@/data/courses';
+"use client";
+import Card from '../ui/Card';
+import { playThaiAudio } from '@/utils/audio';
+import { Volume2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-interface Props {
-  exercise: Exercise;
-  selected: string | null;
-  onSelect: (answer: string) => void;
-  disabled: boolean;
+interface MultipleChoiceProps {
+  question: string;
+  options: string[];
+  selectedAnswer: string | null;
+  isChecked: boolean;
+  onSelect: (option: string) => void;
 }
 
-export function MultipleChoice({ exercise, selected, onSelect, disabled }: Props) {
-  return (
-    <div className="space-y-8">
-      <div className="text-3xl font-bold text-center thai-text mb-12">
-        {exercise.question}
-      </div>
+export default function MultipleChoice({ question, options, selectedAnswer, isChecked, onSelect }: MultipleChoiceProps) {
+  const isThaiText = (text: string) => /[\u0E00-\u0E7F]/.test(text);
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {exercise.options?.map((option) => (
+  return (
+    <div className="w-full">
+      <h1 className="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-100 flex items-center gap-3">
+        {question}
+        {isThaiText(question) && (
           <button
-            key={option}
-            onClick={() => onSelect(option)}
-            disabled={disabled}
-            className={`
-              p-6 rounded-2xl border-2 text-xl font-bold transition-all text-center
-              ${selected === option
-                ? 'border-brand-500 bg-brand-50 text-brand-700'
-                : 'border-gray-200 hover:bg-gray-50 hover:border-gray-300'}
-              ${disabled && selected !== option ? 'opacity-50' : ''}
-              ${disabled && selected === option && selected !== exercise.correctAnswer ? 'border-red-500 bg-red-50 text-red-700' : ''}
-              ${disabled && option === exercise.correctAnswer ? 'border-brand-500 bg-brand-50 text-brand-700' : ''}
-            `}
+            onClick={() => playThaiAudio(question)}
+            className="p-2 bg-brand-50 text-brand-500 rounded-full hover:bg-brand-100"
           >
-            {option}
+            <Volume2 className="w-5 h-5" />
           </button>
+        )}
+      </h1>
+
+      <div className="grid gap-4">
+        {options.map((option, i) => (
+          <motion.div
+            key={option}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+          >
+            <Card
+              hoverable
+              className={`p-4 cursor-pointer text-center text-lg font-medium border-2 transition-all ${
+                selectedAnswer === option
+                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400'
+                  : 'border-transparent'
+              }`}
+              onClick={() => {
+                if (!isChecked) {
+                  onSelect(option);
+                  if (isThaiText(option)) {
+                    playThaiAudio(option);
+                  }
+                }
+              }}
+            >
+              {option}
+            </Card>
+          </motion.div>
         ))}
       </div>
     </div>

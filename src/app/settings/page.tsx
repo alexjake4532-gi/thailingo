@@ -1,4 +1,5 @@
 "use client";
+import PageTransition from "@/components/layout/PageTransition";
 import Sidebar from '@/components/layout/Sidebar';
 import BottomNav from '@/components/layout/BottomNav';
 import Card from '@/components/ui/Card';
@@ -9,6 +10,7 @@ export default function SettingsPage() {
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 md:pb-0">
       <Sidebar />
       <main className="flex-1 md:ml-64 p-4 md:p-8 max-w-4xl mx-auto w-full">
+<PageTransition>
         <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">Settings</h1>
 
         <div className="space-y-6">
@@ -45,7 +47,8 @@ export default function SettingsPage() {
             }}>Reset All Progress</Button>
           </Card>
         </div>
-      </main>
+      </PageTransition>
+</main>
       <BottomNav />
     </div>
   );

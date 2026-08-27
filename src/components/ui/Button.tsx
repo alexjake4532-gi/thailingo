@@ -1,27 +1,29 @@
+"use client";
 import React from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "ref"> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
   size?: 'sm' | 'md' | 'lg' | 'icon';
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:pointer-events-none disabled:opacity-50 active:scale-95';
+    const baseStyles = 'inline-flex items-center justify-center rounded-xl font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:pointer-events-none disabled:opacity-50';
 
     const variants = {
-      primary: 'bg-brand-500 text-white hover:bg-brand-600 shadow-[0_4px_0_0_#16a34a] hover:shadow-[0_2px_0_0_#16a34a] hover:translate-y-[2px]',
-      secondary: 'bg-gold-400 text-white hover:bg-gold-500 shadow-[0_4px_0_0_#ca8a04] hover:shadow-[0_2px_0_0_#ca8a04] hover:translate-y-[2px]',
+      primary: 'bg-brand-500 text-white hover:bg-brand-600 shadow-[0_4px_0_0_#16a34a]',
+      secondary: 'bg-gold-400 text-white hover:bg-gold-500 shadow-[0_4px_0_0_#ca8a04]',
       outline: 'border-2 border-gray-200 bg-transparent hover:bg-gray-50 text-gray-700',
       ghost: 'hover:bg-gray-100 text-gray-700',
-      danger: 'bg-red-500 text-white hover:bg-red-600 shadow-[0_4px_0_0_#dc2626] hover:shadow-[0_2px_0_0_#dc2626] hover:translate-y-[2px]',
-      success: 'bg-green-500 text-white hover:bg-green-600 shadow-[0_4px_0_0_#16a34a] hover:shadow-[0_2px_0_0_#16a34a] hover:translate-y-[2px]',
+      danger: 'bg-red-500 text-white hover:bg-red-600 shadow-[0_4px_0_0_#dc2626]',
+      success: 'bg-green-500 text-white hover:bg-green-600 shadow-[0_4px_0_0_#16a34a]',
     };
 
     const sizes = {
@@ -31,10 +33,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       icon: 'h-10 w-10',
     };
 
+    const hasShadow = ['primary', 'secondary', 'danger', 'success'].includes(variant);
+
     return (
-      <button
-        className={cn(baseStyles, variants[variant], sizes[size], className)}
+      <motion.button
         ref={ref}
+        whileHover={hasShadow ? { y: 2, boxShadow: '0 2px 0 0 currentColor' } : undefined}
+        whileTap={hasShadow ? { y: 4, boxShadow: '0 0px 0 0 currentColor' } : { scale: 0.95 }}
+        className={cn(baseStyles, variants[variant], sizes[size], className)}
+        style={hasShadow ? { color: 'white' } : {}}
         {...props}
       />
     );

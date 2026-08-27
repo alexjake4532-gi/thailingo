@@ -17,7 +17,6 @@ export interface UserState {
   masterVocabulary: (wordId: string) => void;
   addToReview: (wordId: string) => void;
   removeFromReview: (wordId: string) => void;
-  checkStreak: () => void;
   setCurrentCourse: (courseId: string) => void;
 }
 
@@ -41,12 +40,35 @@ export const useAppStore = create<UserState>()(
 
       refillHearts: () => set({ hearts: 5 }),
 
-      completeLesson: (lessonId) => set((state) => {
-        if (!state.completedLessons.includes(lessonId)) {
-          return { completedLessons: [...state.completedLessons, lessonId] };
-        }
-        return state;
-      }),
+      completeLesson: (lessonId) => {
+        set((state) => {
+          let updatedLessons = state.completedLessons;
+          if (!state.completedLessons.includes(lessonId)) {
+            updatedLessons = [...state.completedLessons, lessonId];
+          }
+
+          // Streak Logic
+          const today = new Date().toDateString();
+          let newStreak = state.streak;
+
+          if (state.lastPlayedDate !== today) {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (state.lastPlayedDate === yesterday.toDateString()) {
+              newStreak = state.streak + 1;
+            } else {
+              newStreak = 1;
+            }
+          }
+
+          return {
+            completedLessons: updatedLessons,
+            streak: newStreak,
+            lastPlayedDate: today
+          };
+        });
+      },
 
       masterVocabulary: (wordId) => set((state) => {
         if (!state.vocabularyMastered.includes(wordId)) {
@@ -66,27 +88,11 @@ export const useAppStore = create<UserState>()(
         vocabularyToReview: state.vocabularyToReview.filter(id => id !== wordId)
       })),
 
-      checkStreak: () => {
-        const today = new Date().toDateString();
-        const { lastPlayedDate, streak } = get();
-
-        if (lastPlayedDate !== today) {
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-
-          if (lastPlayedDate === yesterday.toDateString()) {
-            set({ streak: streak + 1, lastPlayedDate: today });
-          } else {
-            set({ streak: 1, lastPlayedDate: today });
-          }
-        }
-      },
-
       setCurrentCourse: (courseId) => set({ currentCourseId: courseId })
     }),
     {
       name: 'sabai-thai-storage',
-      skipHydration: true, // We'll handle hydration manually in a provider
+      skipHydration: true,
     }
   )
 );

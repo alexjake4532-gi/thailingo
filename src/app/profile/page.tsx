@@ -1,4 +1,5 @@
 "use client";
+import PageTransition from "@/components/layout/PageTransition";
 import Sidebar from '@/components/layout/Sidebar';
 import BottomNav from '@/components/layout/BottomNav';
 import Card from '@/components/ui/Card';
@@ -12,6 +13,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 pb-20 md:pb-0">
       <Sidebar />
       <main className="flex-1 md:ml-64 p-4 md:p-8 max-w-4xl mx-auto w-full">
+<PageTransition>
         <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">Profile & Stats</h1>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -49,7 +51,8 @@ export default function ProfilePage() {
             </div>
           </Card>
         </div>
-      </main>
+      </PageTransition>
+</main>
       <BottomNav />
     </div>
   );

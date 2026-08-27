@@ -1,42 +1,67 @@
-'use client';
-import { Exercise } from '@/data/courses';
+"use client";
+import Card from '../ui/Card';
+import { playThaiAudio } from '@/utils/audio';
+import { Volume2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-interface Props {
-  exercise: Exercise;
-  selected: string | null;
-  onSelect: (answer: string) => void;
-  disabled: boolean;
+interface TranslateProps {
+  question: string;
+  options: string[];
+  selectedAnswer: string | null;
+  isChecked: boolean;
+  onSelect: (option: string) => void;
+  direction: 'to_english' | 'to_thai';
 }
 
-export function Translate({ exercise, selected, onSelect, disabled }: Props) {
-  return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="bg-brand-500 text-white rounded-2xl p-6 text-3xl font-bold thai-text rounded-tl-none inline-block relative">
-          <div className="absolute top-0 -left-3 w-4 h-4 bg-brand-500" style={{ clipPath: 'polygon(100% 0, 0 0, 100% 100%)' }} />
-          {exercise.question}
-        </div>
-      </div>
+export default function Translate({ question, options, selectedAnswer, isChecked, onSelect, direction }: TranslateProps) {
+  const isThaiText = (text: string) => /[\u0E00-\u0E7F]/.test(text);
 
-      <div className="flex flex-wrap gap-2">
-        {exercise.options?.map((option) => (
-          <button
+  return (
+    <div className="w-full">
+      <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
+        Translate this sentence
+      </h2>
+      <Card className="p-6 mb-8 text-center bg-gray-50 dark:bg-gray-800">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center justify-center gap-3">
+          {question}
+          {isThaiText(question) && (
+            <button
+              onClick={() => playThaiAudio(question)}
+              className="p-2 bg-brand-100 text-brand-600 rounded-full hover:bg-brand-200"
+            >
+              <Volume2 className="w-5 h-5" />
+            </button>
+          )}
+        </h1>
+      </Card>
+
+      <div className="grid grid-cols-2 gap-4">
+        {options.map((option, i) => (
+          <motion.div
             key={option}
-            onClick={() => onSelect(option)}
-            disabled={disabled}
-            className={`
-              px-6 py-3 rounded-xl border-2 font-bold transition-all
-              ${selected === option
-                ? 'border-brand-500 bg-brand-50 text-brand-700'
-                : 'border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 shadow-[0_2px_0_0_#e5e7eb]'}
-              ${disabled && selected !== option ? 'opacity-50' : ''}
-              ${disabled && selected === option && selected !== exercise.correctAnswer ? 'border-red-500 bg-red-50 text-red-700 shadow-none' : ''}
-              ${disabled && option === exercise.correctAnswer ? 'border-brand-500 bg-brand-50 text-brand-700 shadow-none' : ''}
-              ${selected === option && !disabled ? 'shadow-none translate-y-[2px]' : ''}
-            `}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1 }}
           >
-            {option}
-          </button>
+            <Card
+              hoverable
+              className={`p-4 cursor-pointer text-center text-lg font-medium border-2 transition-all ${
+                selectedAnswer === option
+                  ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-400'
+                  : 'border-transparent'
+              }`}
+              onClick={() => {
+                if (!isChecked) {
+                  onSelect(option);
+                  if (isThaiText(option)) {
+                    playThaiAudio(option);
+                  }
+                }
+              }}
+            >
+              {option}
+            </Card>
+          </motion.div>
         ))}
       </div>
     </div>
