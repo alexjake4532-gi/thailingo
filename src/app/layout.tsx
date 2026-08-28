@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai, Inter } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/layout/Sidebar";
-import BottomNav from "@/components/layout/BottomNav";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const notoSansThai = Noto_Sans_Thai({
@@ -17,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 import StoreProvider from "@/components/providers/StoreProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -24,9 +23,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${notoSansThai.variable} font-sans antialiased text-gray-900 bg-white`}>
-        <StoreProvider>{children}</StoreProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${notoSansThai.variable} font-sans antialiased text-gray-900 bg-white dark:bg-gray-900 dark:text-gray-100`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <StoreProvider>{children}</StoreProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -11,7 +11,7 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
   }, []);
 
   if (!mounted) {
-    return <div className="min-h-screen bg-white dark:bg-gray-900" />; // Prevent hydration mismatch Flash
+    return <div className="min-h-screen bg-transparent" />;
   }
 
   return <>{children}</>;
