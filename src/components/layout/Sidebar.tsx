@@ -1,9 +1,10 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Book, BookOpen, MessageCircle, User, Award } from 'lucide-react';
+import { Home, Book, BookOpen, MessageCircle, User, Award, Settings } from 'lucide-react';
 import { cn } from '../ui/Card'; // using cn from Card since Button cn is not exported uniquely
 import { motion } from 'framer-motion';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Learn', icon: Home },
@@ -12,6 +13,7 @@ const navItems = [
   { href: '/practice', label: 'Practice', icon: MessageCircle },
   { href: '/grammar', label: 'Grammar', icon: Award },
   { href: '/profile', label: 'Profile', icon: User },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -19,8 +21,9 @@ export default function Sidebar() {
 
   return (
     <div className="hidden md:flex flex-col w-64 border-r-2 border-gray-200 dark:border-gray-800 h-screen fixed left-0 top-0 p-4 bg-white dark:bg-gray-900 z-50">
-      <div className="mb-8 px-4 mt-4">
+      <div className="mb-8 px-4 mt-4 flex items-center justify-between">
         <h1 className="text-3xl font-black text-brand-500 tracking-tight">Sabai Thai</h1>
+        <ThemeToggle />
       </div>
       <nav className="flex-1 space-y-2">
         {navItems.map((item) => {
