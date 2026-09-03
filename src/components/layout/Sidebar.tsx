@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Book, BookOpen, MessageCircle, User, Award, Settings } from 'lucide-react';
-import { cn } from '../ui/Card'; // using cn from Card since Button cn is not exported uniquely
+import { cn } from '@/utils/cn'; // using cn from Card since Button cn is not exported uniquely
 import { motion } from 'framer-motion';
 import { ThemeToggle } from '../ui/ThemeToggle';
 

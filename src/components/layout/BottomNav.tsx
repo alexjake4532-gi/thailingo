@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Book, BookOpen, MessageCircle, User, Settings, Moon, Sun } from 'lucide-react';
-import { cn } from '../ui/Card';
+import { cn } from '@/utils/cn';
 import { motion } from 'framer-motion';
 import { useTheme } from "next-themes";
 
